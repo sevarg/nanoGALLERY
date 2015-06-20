@@ -195,6 +195,12 @@ nanoGALLERY v5.7.0 release notes.
         case 'getItem':
           return $(this).data('nanoGallery').nG.GetItem(option);
           break;
+        case 'getOpenAlbumIndex':
+          return $(this).data('nanoGallery').nG.GetOpenAlbumIndex();
+          break;
+        case 'getOpenAlbum':
+          return $(this).data('nanoGallery').nG.GetOpenAlbum();
+          break;
         case 'getItems':
           return $(this).data('nanoGallery').nG.GetItems();
           break;
@@ -239,13 +245,10 @@ nanoGALLERY v5.7.0 release notes.
   function nanoGALLERY() {
     
     /**
-    * Force reload the current album, if provided by Json
-    */
-    this.ReloadAlbum = function(){
-      if( G.O.kind === '' ) {
-        throw 'Not supported for this kind.';
-      }
-
+     * Returns the index of the current album
+     * @returns int
+     **/
+    this.GetOpenAlbumIndex = function(){
       var l=G.I.length;
       var albumIdx =-1;
       // find current album index
@@ -258,7 +261,26 @@ nanoGALLERY v5.7.0 release notes.
       if( albumIdx == -1 ) {
         throw ('Current album not found.');
       }
+      return albumIdx;
+    };
+    
+    /**
+     * Returns the current album
+     * @returns {object}
+     */
+     this.GetOpenAlbum = function(){
+     	return this.GetItem(this.GetOpenAlbumIndex);
+     };
+    
+    /**
+    * Force reload the current album, if provided by Json
+    */
+    this.ReloadAlbum = function(){
+      if( G.O.kind === '' ) {
+        throw 'Not supported for this kind.';
+      }
 
+      var albumIdx = this.GetOpenAlbumIndex();
       // unselect everything & remove link to album (=logical delete)
       if(G.O.keepSelection === false){
         G.selectedItems=[];
